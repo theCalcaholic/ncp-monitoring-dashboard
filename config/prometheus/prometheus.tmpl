@@ -1,0 +1,26 @@
+global:
+  scrape_interval: 15s
+  external_labels:
+    instance: ncp-monitoring
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+  - job_name: 'ncp-nextcloud'
+    scrape_interval: '15s'
+    static_configs:
+      - targets: ['ncp-nextcloud-exporter:9025']
+        labels:
+          hostname: "${NEXTCLOUD_HOST}"
+          service: nextcloud
+  - job_name: 'ncp-system'
+    scrape_interval: '15s'
+    scheme: 'https'
+    basic_auth:
+      username: "${NCP_METRICS_USER}"
+      password: "${NCP_METRICS_PASSWORD}"
+    static_configs:
+      - targets: ["${NEXTCLOUD_HOST}"]
+        labels:
+          hostname: "${NEXTCLOUD_HOST}"
+          service: "system"

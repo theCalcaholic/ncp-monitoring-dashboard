@@ -1,0 +1,9 @@
+apiVersion: 1
+
+providers:
+  - name: NCP Dashboards
+    foler: ''
+    type: file
+    allowUiUpdates: true
+    options:
+      path: /etc/grafana/dashboards

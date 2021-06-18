@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - prometheus:/data
+      - type: bind
+        source: ./config/prometheus
+        target: /etc/prometheus
+        read_only: true
+    networks:
+      - ncp-monitoring
+    depends_on:
+      - ncp-nextcloud-exporter
+    ports:
+      - "9090:9090"
+  ncp-nextcloud-exporter:
+    image: xperimental/nextcloud-exporter
+    env_file:
+      - .env
+    environment:
+      - NEXTCLOUD_LISTEN_ADDRESS=:9025
+      - NEXTCLOUD_TIMEOUT=5s
+    networks:
+      - ncp-monitoring
+  grafana:
+    image: grafana/grafana:latest
+    volumes:
+      - type: bind
+        source: ./config/grafana
+        target: /etc/grafana
+    ports:
+      - 3000:3000
+    networks:
+      - ncp-monitoring
+
+
+
+networks:
+   ncp-monitoring:
+      name: ncp-monitoring
+
+volumes:
+  prometheus:
+
+configs:
+  prometheus_config:
+    file: ./config/prometheus.golang
+    template_driver: golang
