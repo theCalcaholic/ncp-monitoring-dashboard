@@ -15,7 +15,7 @@
 2. [Optional, but recommended] Create a dedicated admin user on your Nextcloud for collecting Nextcloud related metrics. I recommend following this process:
     1. Create a new admin user
     2. Create new device credentials for the user ([as described here](https://docs.nextcloud.com/server/stable/user_manual/en/session_management.html)) and copy the generated password
-    3. Uncheck "Allow filesystem access" for the generated device credentials, as will not be needed
+    3. Uncheck "Allow filesystem access" for the generated device credentials, as those will not be needed
 3. Download and extract or clone this repository to your local computer
 4. Configure the variables in .env
     * The URL where your Nextcloud can be reached, goes in `NEXTCLOUD_SERVER`
