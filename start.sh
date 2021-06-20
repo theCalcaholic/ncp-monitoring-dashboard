@@ -4,6 +4,23 @@ set -e
 
 PATH="$PATH:$HOME/.local/bin"
 COMPOSE_CMD="docker-compose"
+
+if ! command -v docker > /dev/null
+then
+  echo "docker could not be found."
+  read -r -N 1 -p "Should it be installed now (requires root/sudo privileges)? (y|N)" choice
+  [[ "${choice,,}" == "y" ]] || {
+    echo "Exiting..."
+    exit 1
+  }
+
+  tmp_file="$(mktemp)"
+  curl -fsSL https://get.docker.com -o "$tmp_file"
+  sh "$tmp_file"
+fi
+
+
+
 needs_compose=0
 if ! command -v $COMPOSE_CMD > /dev/null
 then
@@ -26,7 +43,7 @@ fi
 . .env
 
 if [[ -z "$NEXTCLOUD_SERVER" ]] || [[ -z "$NEXTCLOUD_USERNAME" ]] \
-  || [[ -z "$NEXTCLOUD_PASSWORD" ]] || [[ -z "$NCP_METRICS_USERNAME=ncpstats" ]] \
+  || [[ -z "$NEXTCLOUD_PASSWORD" ]] || [[ -z "$NCP_METRICS_USERNAME" ]] \
   || [[ -z "$NCP_METRICS_PASSWORD" ]]
 then
   echo "Please fill the variables in .env before executing this script."
