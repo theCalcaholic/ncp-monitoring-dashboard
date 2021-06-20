@@ -2,6 +2,8 @@
 
 *The quickest way to get a monitoring dashboard for nextcloudpi up and running*
 
+![img.png](preview.png)
+
 ## Prerequisites
 
 * Any current Linux OS (auto-installing docker-compose via the start script is only supported on [Debian](https://debian.org) based systems (e.g. [Ubuntu](https://ubuntu.com)) )
