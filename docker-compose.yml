@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.5'
 
 services:
   prometheus:
@@ -43,8 +43,3 @@ networks:
 
 volumes:
   prometheus:
-
-configs:
-  prometheus_config:
-    file: ./config/prometheus.golang
-    template_driver: golang

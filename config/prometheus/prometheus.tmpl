@@ -17,7 +17,7 @@ scrape_configs:
     scrape_interval: '15s'
     scheme: 'https'
     basic_auth:
-      username: "${NCP_METRICS_USER}"
+      username: "${NCP_METRICS_USERNAME}"
       password: "${NCP_METRICS_PASSWORD}"
     static_configs:
       - targets: ["${NEXTCLOUD_HOST}"]
