@@ -22,7 +22,7 @@
     * The username and password of an admin user (see 2.) go in `NEXTCLOUD_USERNAME` and `NEXTCLOUD_PASSWORD`
     * The username and password from the ncp metrics app (see 1.) go in `NCP_METRICS_USERNAME` and `NCP_METRICS_PASSWORD`
 
-5. Run the start script from a terminal with the command `./start.sh`
+5. Run the `start.sh` script either from a terminal or by double clicking it
 
 You should now be able to reach your grafana instance at https://localhost:3000 and login with:
 
