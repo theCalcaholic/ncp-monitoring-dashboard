@@ -27,6 +27,7 @@ services:
   grafana:
     image: grafana/grafana:latest
     volumes:
+      - grafana:/var/lib/grafana
       - type: bind
         source: ./config/grafana
         target: /etc/grafana
@@ -43,3 +44,4 @@ networks:
 
 volumes:
   prometheus:
+  grafana:
