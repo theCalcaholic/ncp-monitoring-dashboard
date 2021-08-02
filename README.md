@@ -27,4 +27,5 @@
 You should now be able to reach your grafana instance at https://localhost:3000 and login with:
 
 user: admin
+
 password: admin
