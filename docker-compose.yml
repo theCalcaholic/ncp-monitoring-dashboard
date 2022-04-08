@@ -1,6 +1,26 @@
 version: '3.5'
 
 services:
+  nginx:
+    image: nginx:latest
+    ports:
+      # Replace 8443 and 8080 with your desired ports here
+      - 8443:443
+      - 8080:80
+    volumes:
+      - type: bind
+        source: ./config/nginx/nginx.conf
+        target: /etc/nginx/nginx.conf
+        read_only: true
+      - type: bind
+        source: ./config/nginx/monitoring-dashboard.conf
+        target: /etc/nginx/monitoring-dashboard.conf
+        read_only: true
+      - type: bind
+        source: ./config/nginx/cert
+        target: /etc/nginx/cert
+    networks:
+      - ncp-monitoring
   prometheus:
     image: prom/prometheus
     volumes:
@@ -13,8 +33,9 @@ services:
       - ncp-monitoring
     depends_on:
       - ncp-nextcloud-exporter
-    ports:
-      - "9090:9090"
+    # Uncomment to expose prometheus directly
+    # ports:
+    #   - "localhost:9090:9090"
   ncp-nextcloud-exporter:
     image: xperimental/nextcloud-exporter
     env_file:
@@ -26,13 +47,15 @@ services:
       - ncp-monitoring
   grafana:
     image: grafana/grafana:latest
+    hostname: grafana
     volumes:
       - grafana:/var/lib/grafana
       - type: bind
         source: ./config/grafana
         target: /etc/grafana
-    ports:
-      - 3000:3000
+    # Uncomment to expose grafana directly
+    # ports:
+    #   - localhost:3000:3000
     networks:
       - ncp-monitoring
 

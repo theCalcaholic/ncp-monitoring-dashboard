@@ -1,2 +1,5 @@
 .idea/
 config/prometheus/prometheus.yml
+certificate.pem
+private_key.pem
+docker-compose

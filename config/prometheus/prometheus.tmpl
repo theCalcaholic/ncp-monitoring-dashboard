@@ -25,3 +25,15 @@ scrape_configs:
         labels:
           hostname: "${NEXTCLOUD_HOST}"
           service: "system"
+  - job_name: 'ncp-metrics'
+    scrape_interval: '60s'
+    scheme: 'https'
+    metrics_path: /metrics/ncp
+    basic_auth:
+      username: "${NCP_METRICS_USERNAME}"
+      password: "${NCP_METRICS_PASSWORD}"
+    static_configs:
+      - targets: ["${NEXTCLOUD_HOST}"]
+        labels:
+          hostname: "${NEXTCLOUD_HOST}"
+          service: "ncp-metrics"

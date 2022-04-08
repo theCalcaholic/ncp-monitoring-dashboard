@@ -42,8 +42,9 @@ fi
 
 . .env
 
-if [[ -z "$NEXTCLOUD_SERVER" ]] || [[ -z "$NEXTCLOUD_USERNAME" ]] \
-  || [[ -z "$NEXTCLOUD_PASSWORD" ]] || [[ -z "$NCP_METRICS_USERNAME" ]] \
+if [[ -z "$NEXTCLOUD_SERVER" ]] \
+  || [[ (-z "$NEXTCLOUD_USERNAME" || -z "$NEXTCLOUD_PASSWORD") && -z "$NEXTCLOUD_AUTH_TOKEN" ]] \
+  || [[ -z "$NCP_METRICS_USERNAME" ]] \
   || [[ -z "$NCP_METRICS_PASSWORD" ]]
 then
   echo "Please fill the variables in .env before executing this script."
@@ -58,11 +59,20 @@ export NEXTCLOUD_HOST="${NEXTCLOUD_SERVER#http*:\/\/*}"
 echo ""
 
 envsubst < config/prometheus/prometheus.tmpl > config/prometheus/prometheus.yml
+
 $COMPOSE_CMD up -d
+[[ -f config/nginx/cert/private_key.pem ]] || {
+  mkdir -p config/nginx/cert
+  openssl req -x509 -newkey rsa:4096 \
+    -keyout config/nginx/cert/private_key.pem \
+    -out config/nginx/cert/certificate.pem \
+    -sha256 -days 365 -nodes -subj "/CN=${1:-localhost}"
+}
+
 
 echo ""
 echo "Services are starting up. In the future you can start them by executing '$COMPOSE_CMD -d up' and stop them by executing "$COMPOSE_CMD down" from this directory."
-echo "You can reach Grafana at https://localhost:3000"
+echo "You can reach Grafana at https://localhost:8443"
 echo ""
 
 read -r -N 1 -p "Show logs? (Y|n)" choice
