@@ -1,0 +1,17 @@
+[Unit]
+Description=NCP Monitoring Dashboard
+Requires=docker.service
+After=docker.service
+
+[Service]
+WorkingDirectory=${WORKING_DIRECTORY}
+ExecStartPre=${DOCKER_COMPOSE_CMD} pull
+ExecStart=${DOCKER_COMPOSE_CMD} up
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=ncp-monitoring-dashboard
+Restart=on-failure
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target

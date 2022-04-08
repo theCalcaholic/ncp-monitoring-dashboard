@@ -55,12 +55,42 @@ export NEXTCLOUD_SERVER
 export NCP_METRICS_USERNAME
 export NCP_METRICS_PASSWORD
 export NEXTCLOUD_HOST="${NEXTCLOUD_SERVER#http*:\/\/*}"
+export DOCKER_COMPOSE_CMD="$(realpath "$(which "${COMPOSE_CMD}")")"
+export WORKING_DIRECTORY="$(pwd)"
 
 echo ""
 
 envsubst < config/prometheus/prometheus.tmpl > config/prometheus/prometheus.yml
 
-$COMPOSE_CMD up -d
+set -x
+
+if [ "$EUID" -eq 0 ]
+then
+  echo ""
+  read -r -N 1 -p "Do you want to install ncp-monitoring-dashboard as a systemd service? This is ideal for persistent hosting. (y|N)" choice
+  echo ""
+  if [[ "${choice,,}" == "y" ]]
+    then
+    chown -R root: .
+    chmod 600 .env
+    envsubst < config/systemd/ncp-monitoring-dashboard.service.tmpl > /etc/systemd/system/ncp-monitoring-dashboard.service
+    systemctl daemon-reload
+    systemctl enable ncp-monitoring-dashboard
+    START_CMD=(systemctl start ncp-monitoring-dashboard)
+    STOP_CMD=(systemctl stop ncp-monitoring-dashboard)
+    SHOW_LOGS_CMD=(journalctl -fu ncp-monitoring-dashboard)
+  fi
+else
+  echo "Skipping systemd service installation. Reason: Must be root"
+fi
+
+[[ -n "${START_CMD[*]}" ]] || {
+  START_CMD=("$COMPOSE_CMD" up -d)
+  STOP_CMD=("$COMPOSE_CMD" down)
+  SHOW_LOGS_CMD=("$COMPOSE_CMD" logs -f --tail='all')
+}
+
+"${START_CMD[@]}"
 [[ -f config/nginx/cert/private_key.pem ]] || {
   mkdir -p config/nginx/cert
   openssl req -x509 -newkey rsa:4096 \
@@ -71,9 +101,9 @@ $COMPOSE_CMD up -d
 
 
 echo ""
-echo "Services are starting up. In the future you can start them by executing '$COMPOSE_CMD -d up' and stop them by executing "$COMPOSE_CMD down" from this directory."
+echo "Services are starting up. In the future you can start them by executing '${START_CMD[*]}' and stop them by executing '${STOP_CMD[*]}' from this directory."
 echo "You can reach Grafana at https://localhost:8443"
 echo ""
 
 read -r -N 1 -p "Show logs? (Y|n)" choice
-[[ "${choice,,}" == "n" ]] || $COMPOSE_CMD logs -f --tail="all"
+[[ "${choice,,}" == "n" ]] || "${SHOW_LOGS_CMD[@]}"
