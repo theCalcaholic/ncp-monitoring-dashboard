@@ -34,3 +34,18 @@ You should now be able to reach your grafana instance at http://localhost:8443 a
 user: admin
 
 password: admin
+
+**!!! You must change this password if you intend to host the dashboard publicly !!!**
+
+
+## Next Steps
+
+After following the steps to setup the NCP monitoring dashboard, you can customize your configuration.
+Here are some ideas:
+
+- Edit config/nginx/monitoring-dashboard.conf by uncommenting the lines starting with `# server_name` and replace `<your domain here>`
+  with the domain at which your monitoring dashboard should be reachable.
+- Adjust the ports where you can reach the dashboard in `docker-compose.yml` (service=>nginx=>ports)
+- Replace the self-signed certificates in config/nginx/cert with trusted certificates for your domain
+- If you want to use your own reverse proxy, remove nginx from `docker-compose.yml` and uncomment the port section of the grafana service
+
