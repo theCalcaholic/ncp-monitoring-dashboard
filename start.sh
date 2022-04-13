@@ -88,7 +88,6 @@ fi
   SHOW_LOGS_CMD=("$COMPOSE_CMD" logs -f --tail='all')
 }
 
-"${START_CMD[@]}"
 [[ -f config/nginx/cert/private_key.pem ]] || {
   mkdir -p config/nginx/cert
   openssl req -x509 -newkey rsa:4096 \
@@ -97,6 +96,7 @@ fi
     -sha256 -days 365 -nodes -subj "/CN=${1:-localhost}"
 }
 
+"${START_CMD[@]}"
 
 echo ""
 echo "Services are starting up. In the future you can start them by executing '${START_CMD[*]}' and stop them by executing '${STOP_CMD[*]}' from this directory."
