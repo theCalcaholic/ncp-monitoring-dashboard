@@ -62,8 +62,6 @@ echo ""
 
 envsubst < config/prometheus/prometheus.tmpl > config/prometheus/prometheus.yml
 
-set -x
-
 if [ "$EUID" -eq 0 ]
 then
   echo ""
